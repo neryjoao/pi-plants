@@ -8,10 +8,17 @@
     "@testing-library/user-event": "^12.6.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-scripts": "4.0.1"
+    "react-scripts": "4.0.1",
+    "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "body-parser": "^1.19.0",
+    "path": "^0.12.7",
+    "johnny-five": "^2.0.0",
+    "lodash": "^4.17.20"
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-backend": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
