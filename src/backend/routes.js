@@ -12,6 +12,26 @@ module.exports.init = (app, plantSystem) => {
         res.send('pong');
     });
 
+    app.get('/plantsDetails', (req, res) => {
+        const plantDetails = plantSystem.getPlantsDetails();
+        res.json(plantDetails);
+        console.log(`Returned ${plantDetails}`)
+    })
+
+    app.get('/name', (req, res) => {
+        const index = _get(req, `query.index`);
+        const name = plantSystem.getName(index);
+        res.json({name});
+    })
+
+    app.post('/name', (req, res) => {
+        const index = _get(req, `query.index`),
+            newName = _get(req, `query.newName`);
+        plantSystem.setName(index, newName);
+        res.json({newName});
+    })
+
+
     app.get('/toggleWater', (req, res) => {
         const index = _get(req, `query.index`);
         plantSystem.toggleWater(index);

@@ -1,0 +1,26 @@
+.plantName {
+
+}
+
+.moistureLevel {
+  position: relative;
+}
+
+.backgroundBar {
+  background-color: gray;
+  height: 14px;
+  border-radius: 14px;
+}
+
+.currentMoistureLevel {
+  position: absolute;
+  height: 14px;
+  max-width: 100%;
+  border-radius: 14px;
+}
+
+.plantSummary {
+  padding: 4px 20px 30px;
+  background-color: lemonchiffon;
+  border-radius: 10px;
+}

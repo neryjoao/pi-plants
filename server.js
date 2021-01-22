@@ -14,7 +14,8 @@ const createPlantSystem = () => {
         moisterPin: 'A0',
         frequency: 2000,
         waterThreshold: 400,
-        isAutomatic: false
+        isAutomatic: false,
+        name: `My first Plant`
     }
     const pot1 = new Pot(pot1Details)
     const plantSystem = new PlantSystem([pot1]);
@@ -29,37 +30,3 @@ board.on('ready', () => {
         console.log(`Listening on port 3001`);
     });
 })
-
-
-
-
-// const _get = require('lodash/get');
-//     let isOn = false;
-//     let relay;
-//     let isAutomatic;
-//     let moistureSensor;
-//     let moistureLevel;
-//     let waterThreshold = 400;
-//
-//     const getWateringMode = () => {
-//     return isAutomatic ? 'Automatic' : 'Manual';
-// }
-
-// const moistureRead = () => {
-//     moistureSensor.on('data', () => {
-//         moistureLevel = moistureSensor.value;
-//         console.log(`Moisture level: ${moistureSensor.value}`);
-//         console.log(`Watering mode: ${getWateringMode()}`);
-//
-//         if (isAutomatic) {
-//             waterPlants();
-//         }
-//     })
-// };
-//
-// const waterPlants = () => {
-//     console.log(`waterThreshold: ${waterThreshold}`);
-//     if ((moistureLevel > waterThreshold && !isOn) || (moistureLevel <= waterThreshold && isOn)) {
-//         toggleWater()
-//     }
-// }

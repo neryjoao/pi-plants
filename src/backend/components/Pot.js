@@ -2,20 +2,20 @@ const Pump = require('./Pump');
 const MoistureSensor = require('./MoistureSensor');
 
 module.exports = class Pot {
-    constructor({five, pumpPin, moisterPin, frequency, moisterLevel, waterThreshold, isAutomatic}) {
+    constructor({five, name, pumpPin, moisterPin, frequency, moisterLevel, waterThreshold, isAutomatic}) {
         this.pump = new Pump(five, pumpPin);
-        this.moistureSensor = new MoistureSensor(five, moisterPin, frequency, moisterLevel, waterThreshold);
+        this.moistureSensor = new MoistureSensor(five, moisterPin, frequency, moisterLevel);
 
+        this.name = name;
         this.isAutomatic = isAutomatic;
         this.waterThreshold = waterThreshold;
+
         this.moistureRead();
     }
 
     moistureRead() {
         this.moistureSensor.on('data', () => {
             this.moistureSensor.moistureLevel = this.moistureSensor.value;
-            console.log(`Moisture level: ${this.moistureSensor.moistureLevel}`);
-            console.log(`Watering mode: ${this.getWateringMode()}`);
 
             if (this.isAutomatic) {
                this.waterPlants();
