@@ -3,11 +3,11 @@ import { PlantSummary } from './PlantSummary';
 import _isArray from 'lodash/isArray';
 import styles from './plants.module.scss';
 
-export const Plants = ({plantDetails}) => {
+export const Plants = ({plantDetails, setSelectedPlant}) => {
     const renderPlantsSummary = () => {
         console.log(`this is what I have ${JSON.stringify(plantDetails)}`)
         return plantDetails.map(plant => {
-            return <PlantSummary {...plant} />
+            return <PlantSummary {...{plant, setSelectedPlant}} />
         });
     };
     const dataFetched = _isArray(plantDetails);
