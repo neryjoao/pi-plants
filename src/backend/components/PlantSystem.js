@@ -1,21 +1,13 @@
+const extractPotDetails = require('../helper');
+
 module.exports = class PlantSystem {
     constructor(pots) {
         this.pots = pots;
     }
 
     getPlantsDetails() {
-        return this.pots.map(pot => {
-            const {name, isAutomatic, waterThreshold} = pot;
-            const {moistureLevel} = pot.moistureSensor;
-            const {isOn} = pot.pump;
-
-            return {
-                name,
-                isAutomatic,
-                waterThreshold,
-                moistureLevel,
-                isOn
-            }
+        return this.pots.map((pot, plantIndex) => {
+            return extractPotDetails(pot, plantIndex);
         })
     }
 
@@ -45,5 +37,10 @@ module.exports = class PlantSystem {
 
     setWaterThreshold(potIndex, newLevel) {
         this.pots[potIndex].setWaterThreshold(newLevel);
+    }
+
+    getPot(potIndex) {
+        const selectedPot = this.pots[potIndex];
+        return extractPotDetails(selectedPot, potIndex);
     }
 }

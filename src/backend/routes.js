@@ -46,11 +46,11 @@ module.exports.init = (app, plantSystem) => {
         res.json({moisture: moistureLevel})
     });
 
-    app.get('/toggleWateringMode', (req, res) => {
+    app.post('/toggleWateringMode', (req, res) => {
         const index = _get(req, `query.index`);
         plantSystem.toggleWateringMode(index);
-        const wateringMode = plantSystem.getWateringMode(index);
-        res.json({wateringMode})
+        const pot = plantSystem.getPot(index);
+        res.json(pot)
     });
 
     app.post('/updateThreshold', (req, res) => {
