@@ -12,6 +12,14 @@
   border-radius: 14px;
 }
 
+.waterThreshold {
+  background-color: red;
+  width: 4px;
+  height: 28px;
+  position: absolute;
+  z-index: 1;
+}
+
 .currentMoistureLevel {
   position: absolute;
   height: 14px;

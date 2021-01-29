@@ -1,4 +1,5 @@
 const Sensor = require('johnny-five').Sensor;
+const {moistureLevelToPercentage} = require('../helper');
 
 module.exports = class MoisterSensor extends Sensor{
     constructor(five, moisterPin, frequency) {
@@ -6,18 +7,10 @@ module.exports = class MoisterSensor extends Sensor{
             pin: moisterPin,
             freq: frequency
         })
-        this.moistureLevel = this.value;
-        this.moisterRead();
-    }
-
-    moisterRead() {
-        this.on('data', () => {
-            this.moistureLevel = this.value;
-            console.log(`Moisture level: ${this.value}`);
-        })
+        this.moistureLevel = moistureLevelToPercentage(this.value);
     }
 
     getMoistureLevel () {
-        return this.moistureLevel;
+        return moistureLevelToPercentage(this.moistureLevel);
     }
 }

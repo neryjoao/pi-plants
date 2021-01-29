@@ -31,14 +31,6 @@ module.exports.init = (app, plantSystem) => {
         res.json({newName});
     })
 
-
-    app.get('/toggleWater', (req, res) => {
-        const index = _get(req, `query.index`);
-        plantSystem.toggleWater(index);
-        const isOn = plantSystem.pots[0].pump.isOn
-        res.json({status: isOn})
-    });
-
     app.get('/moisture', (req, res) => {
         const index = _get(req, `query.index`);
         const moistureLevel = plantSystem.getMoistureLevel(index);
@@ -49,6 +41,13 @@ module.exports.init = (app, plantSystem) => {
     app.post('/toggleWateringMode', (req, res) => {
         const index = _get(req, `query.index`);
         plantSystem.toggleWateringMode(index);
+        const pot = plantSystem.getPot(index);
+        res.json(pot)
+    });
+
+    app.post('/toggleWater', (req, res) => {
+        const index = _get(req, `query.index`);
+        plantSystem.toggleWater(index);
         const pot = plantSystem.getPot(index);
         res.json(pot)
     });

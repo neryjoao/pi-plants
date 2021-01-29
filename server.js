@@ -13,7 +13,7 @@ const createPlantSystem = () => {
         pumpPin: 5,
         moisterPin: 'A0',
         frequency: 2000,
-        waterThreshold: 400,
+        waterThreshold: 50,
         isAutomatic: false,
         name: `My first Plant`
     }

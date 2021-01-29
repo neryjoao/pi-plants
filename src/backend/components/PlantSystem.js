@@ -1,4 +1,4 @@
-const extractPotDetails = require('../helper');
+const {extractPotDetails} = require('../helper');
 
 module.exports = class PlantSystem {
     constructor(pots) {
