@@ -1,5 +1,9 @@
 .plantName {
+  display: inline-block;
+}
 
+.form {
+  display: inline;
 }
 
 .moistureLevel {
@@ -32,4 +36,17 @@
   background-color: lemonchiffon;
   border-radius: 10px;
   margin-bottom: 12px;
+}
+
+.editingName {
+  margin: 1rem 0;
+  background-color: transparent;
+  border: dashed thin gray;
+  padding: 5px;
+  color: gray;
+  font-style: italic;
+}
+
+.iconWrapper {
+  margin-left: 16px;
 }
