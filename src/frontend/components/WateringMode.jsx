@@ -1,9 +1,13 @@
 import React from 'react';
 import styles from './wateringMode.module.scss';
-import {toggleWateringMode} from '../actions/setWateringMode';
-import {toggleWatering} from '../actions/setWatering';
+import {postWateringMode} from '../actions/setWateringMode';
+import {postWatering} from '../actions/setWatering';
+import _cloneDeep from 'lodash/cloneDeep';
+import _set from 'lodash/set';
 
-export const WateringMode = ({isAutomatic, waterThreshold, isOn, plantIndex, updatePlant}) => {
+export const WateringMode = ({plant, updatePlant}) => {
+
+    const {isAutomatic, isOn, plantIndex} = plant || {}
 
     const selectedStyles = {
         backgroundColor: 'green',
@@ -16,17 +20,17 @@ export const WateringMode = ({isAutomatic, waterThreshold, isOn, plantIndex, upd
 
     const onToggleWateringMode = (setAutomatic) => {
         if (isAutomatic !== setAutomatic) {
-            toggleWateringMode(plantIndex).then(response => {
-                updatePlant(response);
-            });
+            const clonedPlant = _cloneDeep(plant);
+            _set(clonedPlant, `isAutomatic`, setAutomatic);
+            updatePlant(clonedPlant, () => postWateringMode(setAutomatic, plantIndex));
         }
     }
 
     const onToggleWatering = (setIsOn) => {
         if (!isAutomatic && isOn !== setIsOn) {
-            toggleWatering(plantIndex).then(response => {
-                updatePlant(response)
-            })
+            const clonedPlant = _cloneDeep(plant);
+            _set(clonedPlant, `isOn`, setIsOn);
+            updatePlant(clonedPlant, () => postWatering(setIsOn, plantIndex));
         }
     }
 

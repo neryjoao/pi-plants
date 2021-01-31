@@ -26,7 +26,7 @@ module.exports.init = (app, plantSystem) => {
     })
 
     app.post('/name', (req, res) => {
-        const { key, value, plantIndex } = _get(req, `body`)
+        const { key, value, plantIndex } = _get(req, `body`);
         plantSystem.setName(plantIndex, value);
         updateStoredData(key, value, plantIndex);
         res.json({newName: value});
@@ -40,17 +40,17 @@ module.exports.init = (app, plantSystem) => {
     });
 
     app.post('/toggleWateringMode', (req, res) => {
-        const index = _get(req, `query.index`);
-        plantSystem.toggleWateringMode(index);
-        const pot = plantSystem.getPot(index);
-        res.json(pot)
+        const { key, value, plantIndex } = _get(req, `body`);
+        plantSystem.toggleWateringMode(plantIndex);
+        updateStoredData(key, value, plantIndex);
+        res.json({isAutomatic: value})
     });
 
     app.post('/toggleWater', (req, res) => {
-        const index = _get(req, `query.index`);
-        plantSystem.toggleWater(index);
-        const pot = plantSystem.getPot(index);
-        res.json(pot)
+        const { key, value, plantIndex } = _get(req, `body`);
+        plantSystem.toggleWater(plantIndex);
+        updateStoredData(key, value, plantIndex);
+        res.json({isOn: value})
     });
 
     app.post('/updateThreshold', (req, res) => {

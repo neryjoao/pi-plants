@@ -4,8 +4,6 @@ import {WateringMode} from './WateringMode';
 import {Icon} from '../icons/Icon';
 
 export const SelectedPlant = ({selectedPlant, updatePlant}) => {
-    const {isAutomatic, waterThreshold, isOn, plantIndex} = selectedPlant || {};
-
     return <div>
         <div onClick={() => updatePlant()}>
             <Icon {...{
@@ -13,6 +11,6 @@ export const SelectedPlant = ({selectedPlant, updatePlant}) => {
             }}/>
         </div>
         <PlantSummary {...{plant: selectedPlant, updatePlant, allowEditing: true}}/>
-        <WateringMode {...{isAutomatic, waterThreshold, isOn, plantIndex, updatePlant}}/>
+        <WateringMode {...{plant: selectedPlant, updatePlant}}/>
     </div>;
 }

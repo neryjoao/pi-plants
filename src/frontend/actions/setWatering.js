@@ -1,22 +1,18 @@
 import {CONSTANTS} from '../CONSTANTS';
 import axios from 'axios';
-import _get from 'lodash/get';
-import _set from 'lodash/set';
 
 const { BACKEND_URL , ENDPOINTS} = CONSTANTS,
     { TOGGLE_WATERING } = ENDPOINTS;
 
-export const toggleWatering = async (index) => {
+export const postWatering = async (isOn,  plantIndex) => {
     const axiosData = {
         method: `POST`,
-        url: `${BACKEND_URL}${TOGGLE_WATERING}?index=${index}`,
-    }
-
-    const storedMockedData = _get(window, `plants.details[${index}]`);
-
-    if (storedMockedData) {
-        _set(storedMockedData, `plantIndex`, !_get(storedMockedData, `plantIndex`));
-        return storedMockedData;
+        url: `${BACKEND_URL}${TOGGLE_WATERING}`,
+        data: {
+            key: 'isOn',
+            value: isOn,
+            plantIndex
+        }
     }
 
     try {
