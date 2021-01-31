@@ -9,8 +9,6 @@ export const PlantSummary = ({plant, updatePlant, allowEditing}) => {
     const [editing, setEditing] = useState();
     const [plantName, setPlantName] = useState(plant.name);
 
-    const {waterThreshold} = plant;
-
     useEffect(() => {
         setCurrentLevel(moistureLevel);
     }, [])
@@ -19,11 +17,12 @@ export const PlantSummary = ({plant, updatePlant, allowEditing}) => {
         className: styles.plantSummary,
         onClick: () => !allowEditing && updatePlant && updatePlant(plant)
     }}>
-        {!editing ? <h3 {...{
+        {!editing ?
+            <h3 {...{
                 className: styles.plantName,
                 onClick: () => allowEditing && setEditing(true)
             }}>{plantName}
-        </h3> :
+            </h3> :
             <EditableName {...{
                 plant,
                 updatePlant,
@@ -32,7 +31,7 @@ export const PlantSummary = ({plant, updatePlant, allowEditing}) => {
                 setPlantName,
 
             }}/>}
-            <MoistureLevel {...{waterThreshold, currentLevel}}/>
+        <MoistureLevel {...{plant, updatePlant, currentLevel, allowEditing}}/>
 
     </div>
 }

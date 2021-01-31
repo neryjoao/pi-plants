@@ -1,19 +1,19 @@
 import React from 'react';
 import _cloneDeep from 'lodash/cloneDeep';
 import _set from 'lodash/set';
-import styles from './editableName.module.scss'
+import styles from './editableName.module.scss';
 import {Icon} from '../icons/Icon';
 
-export const EditableName = ({plant, updatePlant, setEditing, plantName, setPlantName}) => {
+export const EditableMoisture = ({plant, waterThreshold, setWaterThreshold, updatePlant, setEditing}) => {
     const onCLickConfirm = () => {
         const clonedPlant = _cloneDeep(plant);
-        _set(clonedPlant, `name`, plantName);
+        _set(clonedPlant, `waterThreshold`, waterThreshold);
         updatePlant(clonedPlant);
         setEditing(false);
     }
 
     const onClickCancel = () => {
-        setPlantName(plant.name);
+        setWaterThreshold(plant.waterThreshold);
         setEditing(false);
     }
 
@@ -22,10 +22,10 @@ export const EditableName = ({plant, updatePlant, setEditing, plantName, setPlan
         className: styles.form
     }}>
         <input {...{
-            type: 'text',
-            value: plantName,
+            type: 'number',
+            value: waterThreshold,
             className: styles.editingName,
-            onChange: (event) => setPlantName(event.target.value)
+            onChange: (event) => setWaterThreshold(event.target.value)
         }}/>
         <Icon {...{
             name: 'check',
