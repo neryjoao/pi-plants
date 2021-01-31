@@ -1,5 +1,6 @@
 const Pot = require('./src/backend/components/Pot');
 const PlantSystem = require('./src/backend/components/PlantSystem');
+const fs = require('fs');
 
 const express = require('express');
 const five = require('johnny-five');
@@ -8,17 +9,14 @@ const app = express();
 const board = new five.Board();
 
 const createPlantSystem = () => {
-    const pot1Details = {
-        five,
-        pumpPin: 5,
-        moisterPin: 'A0',
-        frequency: 2000,
-        waterThreshold: 50,
-        isAutomatic: false,
-        name: `My first Plant`
-    }
-    const pot1 = new Pot(pot1Details)
-    const plantSystem = new PlantSystem([pot1]);
+    const plantDetails = JSON.parse(fs.readFileSync('./src/backend/data/plantsDetails.json'));
+
+    const pots = plantDetails.map(plant => {
+        plant.five = five;
+        return new Pot(plant);
+    });
+
+    const plantSystem = new PlantSystem(pots);
 
     require(`./src/backend/routes`).init(app, plantSystem);
 }

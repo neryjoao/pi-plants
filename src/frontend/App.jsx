@@ -18,12 +18,17 @@ export const App = () => {
         });
     }, [])
 
-    const updatePlant = plant => {
+    const updatePlant = (plant, callback) => {
         setSelectedPlant(plant);
         if (plant) {
             const plantDetailsClone = _cloneDeep(plantDetails);
             plantDetailsClone.splice(_get(plant, `plantIndex`), 1, plant);
-            setPlantDetails(plantDetailsClone);
+
+            callback ?
+                callback().then(() => {
+                    setPlantDetails(plantDetailsClone);
+                }) :
+                setPlantDetails(plantDetailsClone);
         }
     }
 

@@ -3,12 +3,13 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _set from 'lodash/set';
 import styles from './editableName.module.scss';
 import {Icon} from '../icons/Icon';
+import {postWaterThreshold} from '../actions/setPlantDetails';
 
 export const EditableMoisture = ({plant, waterThreshold, setWaterThreshold, updatePlant, setEditing}) => {
     const onCLickConfirm = () => {
         const clonedPlant = _cloneDeep(plant);
         _set(clonedPlant, `waterThreshold`, waterThreshold);
-        updatePlant(clonedPlant);
+        updatePlant(clonedPlant, () => postWaterThreshold(waterThreshold, plant.plantIndex));
         setEditing(false);
     }
 

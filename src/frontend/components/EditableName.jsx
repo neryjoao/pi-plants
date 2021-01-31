@@ -3,12 +3,13 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _set from 'lodash/set';
 import styles from './editableName.module.scss'
 import {Icon} from '../icons/Icon';
+import {postPlantName} from '../actions/setPlantDetails';
 
 export const EditableName = ({plant, updatePlant, setEditing, plantName, setPlantName}) => {
     const onCLickConfirm = () => {
         const clonedPlant = _cloneDeep(plant);
         _set(clonedPlant, `name`, plantName);
-        updatePlant(clonedPlant);
+        updatePlant(clonedPlant, () => postPlantName(plantName, plant.plantIndex));
         setEditing(false);
     }
 

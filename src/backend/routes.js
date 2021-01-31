@@ -1,4 +1,5 @@
 const _get = require(`lodash/get`);
+const {updateStoredData} = require('./data/dataHelper/updateStoredData')
 
 module.exports.init = (app, plantSystem) => {
     const cors = require('cors');
@@ -25,10 +26,10 @@ module.exports.init = (app, plantSystem) => {
     })
 
     app.post('/name', (req, res) => {
-        const index = _get(req, `query.index`),
-            newName = _get(req, `query.newName`);
-        plantSystem.setName(index, newName);
-        res.json({newName});
+        const { key, value, plantIndex } = _get(req, `body`)
+        plantSystem.setName(plantIndex, value);
+        updateStoredData(key, value, plantIndex);
+        res.json({newName: value});
     })
 
     app.get('/moisture', (req, res) => {
@@ -53,13 +54,9 @@ module.exports.init = (app, plantSystem) => {
     });
 
     app.post('/updateThreshold', (req, res) => {
-        const index = _get(req, `query.index`),
-            newLevel = _get(req, `query.waterThreshold`);
-        if (newLevel) {
-            plantSystem.setWaterThreshold(index, newLevel);
-            res.json({waterThreshold: plantSystem.pots[index].moistureSensor.waterThreshold})
-        } else {
-            res.json({error: `Threshold not updated`})
-        }
+        const { key, value, plantIndex } = _get(req, `body`)
+        plantSystem.setWaterThreshold(plantIndex, value);
+        updateStoredData(key, value, plantIndex);
+        res.json({newThreshold: value});
     })
 }

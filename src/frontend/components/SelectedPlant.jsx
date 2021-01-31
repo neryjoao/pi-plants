@@ -7,7 +7,7 @@ export const SelectedPlant = ({selectedPlant, updatePlant}) => {
     const {isAutomatic, waterThreshold, isOn, plantIndex} = selectedPlant || {};
 
     return <div>
-        <div onClick={() => updatePlant(undefined)}>
+        <div onClick={() => updatePlant()}>
             <Icon {...{
                 name: `home`
             }}/>
