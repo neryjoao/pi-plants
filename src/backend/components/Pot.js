@@ -1,15 +1,17 @@
 const Pump = require('./Pump');
 const MoistureSensor = require('./MoistureSensor');
 const {moistureLevelToPercentage} = require('../helper');
+const {storeDataRead} = require('../data/dataHelper/dataHelper')
 
 module.exports = class Pot {
-    constructor({five, name, pumpPin, moisterPin, frequency, moisterLevel, waterThreshold, isAutomatic}) {
+    constructor({five, name, pumpPin, moisterPin, frequency, moisterLevel, waterThreshold, isAutomatic, plantIndex}) {
         this.pump = new Pump(five, pumpPin);
         this.moistureSensor = new MoistureSensor(five, moisterPin, frequency, moisterLevel);
 
         this.name = name;
         this.isAutomatic = isAutomatic;
         this.waterThreshold = waterThreshold;
+        this.plantIndex = plantIndex;
 
         this.moistureRead();
     }
@@ -17,7 +19,9 @@ module.exports = class Pot {
     moistureRead() {
         this.moistureSensor.on('data', () => {
             this.moistureSensor.moistureLevel = moistureLevelToPercentage(this.moistureSensor.value);
-            console.log(`MoistureLevel: ${this.moistureSensor.moistureLevel}`)
+            console.log(`MoistureLevel: ${this.moistureSensor.moistureLevel}`);
+
+            storeDataRead(this);
 
             if (this.isAutomatic) {
                this.waterPlants();

@@ -1,6 +1,6 @@
 const Pot = require('./src/backend/components/Pot');
 const PlantSystem = require('./src/backend/components/PlantSystem');
-const fs = require('fs');
+const {getData} = require('./src/backend/data/dataHelper/dataHelper')
 
 const express = require('express');
 const five = require('johnny-five');
@@ -9,10 +9,11 @@ const app = express();
 const board = new five.Board();
 
 const createPlantSystem = () => {
-    const plantDetails = JSON.parse(fs.readFileSync('./src/backend/data/plantsDetails.json'));
+    const plantDetails = getData();
 
-    const pots = plantDetails.map(plant => {
+    const pots = plantDetails.map((plant, plantIndex) => {
         plant.five = five;
+        plant.plantIndex = plantIndex;
         return new Pot(plant);
     });
 

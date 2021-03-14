@@ -47,6 +47,7 @@ export const WateringMode = ({plant, updatePlant}) => {
             <span className={styles.mode} style={automaticButtonStyle} onClick={() => onToggleWateringMode(true)}>Automatic</span>
             <span className={styles.mode} style={manualButtonStyle} onClick={() => onToggleWateringMode(false)}>Manual</span>
         </div>
+            <h2>Water on/off</h2>
         <div>
             <span className={styles.mode} style={isOnButtonStyle} onClick={() => onToggleWatering(true)}>On</span>
             <span className={styles.mode} style={isOffButtonStyle} onClick={() => onToggleWatering(false)}>Off</span>
