@@ -16,7 +16,8 @@ const getData = (path= PLANT_DETAILS_PATH) => {
 };
 
 const storeDataRead = (pot) => {
-    const {name, isAutomatic, waterThreshold, plantIndex, moistureSensor} = pot || {};
+    const {name, isAutomatic, waterThreshold, plantIndex, moistureSensor, pump} = pot || {};
+    const {isOn} = pump || {};
     const {moistureLevel} = moistureSensor || {};
     const date = new Date();
 
@@ -26,6 +27,7 @@ const storeDataRead = (pot) => {
         isAutomatic,
         waterThreshold,
         moistureLevel,
+        isOn,
         date
     });
     fs.writeFileSync(DATA_READS_PATH, JSON.stringify(storedData));

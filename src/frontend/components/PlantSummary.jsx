@@ -2,16 +2,16 @@ import React, {useState, useEffect} from 'react';
 import styles from './plantSummary.module.scss';
 import {EditableName} from './EditableName';
 import {MoistureLevel} from './MoistureLevel';
+import _get from 'lodash/get'
 
 export const PlantSummary = ({plant, updatePlant, allowEditing}) => {
     const [currentLevel, setCurrentLevel] = useState();
-    const {moistureLevel} = plant || {}
     const [editing, setEditing] = useState();
     const [plantName, setPlantName] = useState(plant.name);
 
     useEffect(() => {
-        setCurrentLevel(moistureLevel);
-    }, [])
+        setCurrentLevel(_get(plant, `moistureLevel`));
+    }, [plant])
 
     return <div {...{
         className: styles.plantSummary,

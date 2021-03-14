@@ -1,1 +1,1 @@
-[{"pumpPin":5,"moisterPin":"A0","frequency":2000,"waterThreshold":"30","isAutomatic":false,"name":"My Plant","isOn":false}]
+[{"pumpPin":5,"moisterPin":"A0","frequency":20000,"waterThreshold":"30","isAutomatic":false,"name":"My Plant","isOn":false}]
