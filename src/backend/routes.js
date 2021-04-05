@@ -13,10 +13,20 @@ module.exports.init = (app, plantSystem) => {
         res.send('pong');
     });
 
-    app.get('/plantsDetails', (req, res) => {
-        const plantDetails = plantSystem.getPlantsDetails();
-        res.json(plantDetails);
-        console.log(`Returned ${plantDetails}`)
+    const useServerSentEventsMiddleware = (req, res, next) => {
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+        next();
+    }
+
+    app.get('/plantsDetails', useServerSentEventsMiddleware, (req, res) => {
+        setInterval(() => {
+            const data = plantSystem.getPlantsDetails();
+            res.write(`data: ${JSON.stringify(data)}\n\n`);
+        }, 2000)
     })
 
     app.get('/name', (req, res) => {
