@@ -19,7 +19,7 @@ module.exports = class Pot {
     moistureRead() {
         this.moistureSensor.on('data', () => {
             this.moistureSensor.moistureLevel = moistureLevelToPercentage(this.moistureSensor.value);
-            console.log(`MoistureLevel: ${this.moistureSensor.moistureLevel}`);
+            console.log(`Moisture Level [${this.name}]: ${this.moistureSensor.moistureLevel}`);
 
             storeDataRead(this);
 

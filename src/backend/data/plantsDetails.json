@@ -1,1 +1,74 @@
-[{"pumpPin":5,"moisterPin":"A0","frequency":20000,"waterThreshold":"30","isAutomatic":false,"name":"My Plant","isOn":false}]
+[
+  {
+    "pumpPin": 2,
+    "moisterPin": "A0",
+    "frequency": 5000,
+    "waterThreshold": "30",
+    "isAutomatic": false,
+    "name": "My Plant1",
+    "isOn": false
+  },
+  {
+    "pumpPin": 3,
+    "moisterPin": "A1",
+    "frequency": 5000,
+    "waterThreshold": "30",
+    "isAutomatic": false,
+    "name": "My Plant2",
+    "isOn": false
+  },
+  {
+    "pumpPin": 4,
+    "moisterPin": "A2",
+    "frequency": 5000,
+    "waterThreshold": "30",
+    "isAutomatic": false,
+    "name": "My Plant3",
+    "isOn": false
+  },
+  {
+    "pumpPin": 5,
+    "moisterPin": "A3",
+    "frequency": 5000,
+    "waterThreshold": "30",
+    "isAutomatic": false,
+    "name": "My Plant4",
+    "isOn": false
+  },
+  {
+    "pumpPin": 6,
+    "moisterPin": "A4",
+    "frequency": 5000,
+    "waterThreshold": "30",
+    "isAutomatic": false,
+    "name": "My Plant5",
+    "isOn": false
+  },
+  {
+    "pumpPin": 7,
+    "moisterPin": "A5",
+    "frequency": 5000,
+    "waterThreshold": "30",
+    "isAutomatic": false,
+    "name": "My Plant6",
+    "isOn": false
+  },
+  {
+    "pumpPin": 8,
+    "moisterPin": "A6",
+    "frequency": 5000,
+    "waterThreshold": "30",
+    "isAutomatic": false,
+    "name": "My Plant7",
+    "isOn": false
+  },
+  {
+    "pumpPin": 9,
+    "moisterPin": "A7",
+    "frequency": 5000,
+    "waterThreshold": "30",
+    "isAutomatic": false,
+    "name": "My Plant8",
+    "isOn": false
+  }
+]
