@@ -17,7 +17,8 @@
     "path": "^0.12.7",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-scripts": "4.0.1"
+    "react-scripts": "4.0.1",
+    "moment": "^2.29.1n"
   },
   "scripts": {
     "start": "run-p start-frontend start-backend",
