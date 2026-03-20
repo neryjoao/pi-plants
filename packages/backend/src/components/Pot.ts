@@ -16,20 +16,14 @@ export class Pot {
     const { name, pumpPin, moisterPin, frequency, waterThreshold, isAutomatic, plantIndex } = config;
 
     this.pump = new Pump(board, pumpPin);
-    this.moistureSensor = new MoistureSensor(board, moisterPin, frequency);
     this.name = name;
     this.isAutomatic = isAutomatic;
     this.waterThreshold = waterThreshold;
     this.plantIndex = plantIndex;
 
-    this.moistureRead();
-  }
-
-  private moistureRead(): void {
-    this.moistureSensor.on('data', () => {
+    this.moistureSensor = new MoistureSensor(board, moisterPin, frequency, () => {
       console.log(`Moisture Level [${this.name}]: ${this.moistureSensor.moistureLevel}`);
       storeDataRead(this);
-
       if (this.isAutomatic) {
         this.waterPlants();
       }

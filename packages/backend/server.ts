@@ -1,4 +1,5 @@
-import express from 'express';
+import express, { json, urlencoded } from 'express';
+import cors from 'cors';
 import { ArduinoBoard } from './src/components/ArduinoBoard';
 import { Pot } from './src/components/Pot';
 import { PlantSystem } from './src/components/PlantSystem';
@@ -9,6 +10,9 @@ const ARDUINO_PORT = process.env.ARDUINO_PORT ?? '/dev/ttyACM0';
 const PORT = Number(process.env.PORT ?? 3001);
 
 const app = express();
+app.use(json());
+app.use(urlencoded({ extended: true }));
+app.use(cors());
 const board = new ArduinoBoard(ARDUINO_PORT);
 
 board.onReady(() => {
