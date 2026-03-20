@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep';
 import styles from './editableName.module.scss';
 import { Icon } from '../icons/Icon';
 import { postPlantName } from '../actions/setPlantDetails';
@@ -14,10 +13,9 @@ interface Props {
 }
 
 export const EditableName = ({ plant, updatePlant, setEditing, plantName, setPlantName }: Props) => {
-  const onClickConfirm = () => {
-    updatePlant({ ...cloneDeep(plant), name: plantName }, () =>
-      postPlantName(plantName, plant.plantIndex)
-    );
+  const onClickConfirm = async () => {
+    const updated = await postPlantName(plantName, plant.plantIndex);
+    if (updated) updatePlant(updated);
     setEditing(false);
   };
 

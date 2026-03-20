@@ -1,5 +1,6 @@
 import { Application, Request, Response, NextFunction } from 'express';
 import { updatePlantsDetails } from './data/dataHelper/dataHelper';
+import { queryReadings } from './database';
 import { PlantSystem } from './components/PlantSystem';
 
 export const init = (app: Application, plantSystem: PlantSystem): void => {
@@ -23,41 +24,43 @@ export const init = (app: Application, plantSystem: PlantSystem): void => {
     }, 2000);
   });
 
-  app.get('/name', (req: Request, res: Response) => {
+  app.get('/moisture', (req: Request, res: Response) => {
     const index = Number(req.query.index);
-    res.json({ name: plantSystem.getName(index) });
+    res.json({ moisture: plantSystem.getMoistureLevel(index) });
+  });
+
+  app.get('/history/:plantIndex', (req: Request, res: Response) => {
+    const plantIndex = Number(req.params.plantIndex);
+    const to = (req.query.to as string) ?? new Date().toISOString();
+    const from = (req.query.from as string) ?? new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    res.json(queryReadings(plantIndex, from, to));
   });
 
   app.post('/name', (req: Request, res: Response) => {
     const { key, value, plantIndex } = req.body as { key: string; value: string; plantIndex: number };
     plantSystem.setName(plantIndex, value);
     updatePlantsDetails(key, value, plantIndex);
-    res.json({ newName: value });
-  });
-
-  app.get('/moisture', (req: Request, res: Response) => {
-    const index = Number(req.query.index);
-    res.json({ moisture: plantSystem.getMoistureLevel(index) });
+    res.json(plantSystem.getPot(plantIndex));
   });
 
   app.post('/toggleWateringMode', (req: Request, res: Response) => {
     const { key, value, plantIndex } = req.body as { key: string; value: boolean; plantIndex: number };
     plantSystem.toggleWateringMode(plantIndex);
     updatePlantsDetails(key, value, plantIndex);
-    res.json({ isAutomatic: value });
+    res.json(plantSystem.getPot(plantIndex));
   });
 
   app.post('/toggleWater', (req: Request, res: Response) => {
     const { key, value, plantIndex } = req.body as { key: string; value: boolean; plantIndex: number };
     plantSystem.toggleWater(plantIndex);
     updatePlantsDetails(key, value, plantIndex);
-    res.json({ isOn: value });
+    res.json(plantSystem.getPot(plantIndex));
   });
 
   app.post('/updateThreshold', (req: Request, res: Response) => {
     const { key, value, plantIndex } = req.body as { key: string; value: number; plantIndex: number };
     plantSystem.setWaterThreshold(plantIndex, value);
     updatePlantsDetails(key, value, plantIndex);
-    res.json({ newThreshold: value });
+    res.json(plantSystem.getPot(plantIndex));
   });
 };

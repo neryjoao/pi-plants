@@ -17,11 +17,13 @@ export interface PlantState {
   plantIndex: number;
 }
 
-export interface SensorReading {
+export interface PlantReading {
+  id: number;
+  plantIndex: number;
   name: string;
-  isAutomatic: boolean;
-  waterThreshold: number;
-  moistureLevel: number;
+  moisture: number;
   isOn: boolean;
-  date: string;
+  isAutomatic: boolean;
+  threshold: number;
+  recordedAt: string; // ISO 8601
 }

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Plants } from './components/Plants';
 import { SelectedPlant } from './components/SelectedPlant';
 import styles from './app.module.scss';
-import cloneDeep from 'lodash/cloneDeep';
 import { CONSTANTS } from './CONSTANTS';
 import type { PlantState } from '@pi-plants/shared';
 import type { UpdatePlantFn } from './types';
@@ -28,16 +27,12 @@ export const App = () => {
     }
   }, [plantDetails]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const updatePlant: UpdatePlantFn = (plant, callback) => {
+  const updatePlant: UpdatePlantFn = (plant) => {
     setSelectedPlant(plant);
     if (plant && plantDetails) {
-      const clone = cloneDeep(plantDetails);
-      clone.splice(plant.plantIndex, 1, plant);
-      if (callback) {
-        callback().then(() => setPlantDetails(clone));
-      } else {
-        setPlantDetails(clone);
-      }
+      const updated = [...plantDetails];
+      updated.splice(plant.plantIndex, 1, plant);
+      setPlantDetails(updated);
     }
   };
 

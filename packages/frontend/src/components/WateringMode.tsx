@@ -1,7 +1,6 @@
 import styles from './wateringMode.module.scss';
 import { postWateringMode } from '../actions/setWateringMode';
 import { postWatering } from '../actions/setWatering';
-import cloneDeep from 'lodash/cloneDeep';
 import type { PlantState } from '@pi-plants/shared';
 import type { UpdatePlantFn } from '../types';
 
@@ -16,19 +15,17 @@ const notSelectedStyles = { backgroundColor: 'gainsboro', color: 'black' };
 export const WateringMode = ({ plant, updatePlant }: Props) => {
   const { isAutomatic, isOn, plantIndex } = plant;
 
-  const onToggleWateringMode = (setAutomatic: boolean) => {
+  const onToggleWateringMode = async (setAutomatic: boolean) => {
     if (isAutomatic !== setAutomatic) {
-      updatePlant({ ...cloneDeep(plant), isAutomatic: setAutomatic }, () =>
-        postWateringMode(setAutomatic, plantIndex)
-      );
+      const updated = await postWateringMode(setAutomatic, plantIndex);
+      if (updated) updatePlant(updated);
     }
   };
 
-  const onToggleWatering = (setIsOn: boolean) => {
+  const onToggleWatering = async (setIsOn: boolean) => {
     if (!isAutomatic && isOn !== setIsOn) {
-      updatePlant({ ...cloneDeep(plant), isOn: setIsOn }, () =>
-        postWatering(setIsOn, plantIndex)
-      );
+      const updated = await postWatering(setIsOn, plantIndex);
+      if (updated) updatePlant(updated);
     }
   };
 

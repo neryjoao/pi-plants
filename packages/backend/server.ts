@@ -4,6 +4,7 @@ import { ArduinoBoard } from './src/components/ArduinoBoard';
 import { Pot } from './src/components/Pot';
 import { PlantSystem } from './src/components/PlantSystem';
 import { getData } from './src/data/dataHelper/dataHelper';
+import { pruneOldReadings } from './src/database';
 import { init } from './src/routes';
 
 const ARDUINO_PORT = process.env.ARDUINO_PORT ?? '/dev/ttyACM0';
@@ -13,6 +14,9 @@ const app = express();
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cors());
+pruneOldReadings();
+setInterval(pruneOldReadings, 24 * 60 * 60 * 1000);
+
 const board = new ArduinoBoard(ARDUINO_PORT);
 
 board.onReady(() => {
