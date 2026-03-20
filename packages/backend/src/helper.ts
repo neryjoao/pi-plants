@@ -1,0 +1,21 @@
+import type { PlantState } from '@pi-plants/shared';
+import type { Pot } from './components/Pot';
+
+const dryLevel = 650;
+const wetLevel = 340;
+
+export const extractPotDetails = (pot: Pot, plantIndex: number): PlantState => {
+  const { name, isAutomatic, waterThreshold } = pot;
+  const { moistureLevel } = pot.moistureSensor;
+  const { isOn } = pot.pump;
+
+  return { name, isAutomatic, waterThreshold, moistureLevel, isOn, plantIndex };
+};
+
+export const moistureLevelToPercentage = (value: number): number => {
+  return Math.round(100 - ((value - wetLevel) / (dryLevel - wetLevel)) * 100);
+};
+
+export const percentageToMoistureLevel = (percentage: number): number => {
+  return Math.round(((100 - percentage) / 100) * (dryLevel - wetLevel) + wetLevel);
+};

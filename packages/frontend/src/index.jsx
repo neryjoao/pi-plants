@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {App} from './frontend/App'
+import {App} from './App'
 import _set from 'lodash/set'
 
 const MOCK_PLANT_DETAILS = false,

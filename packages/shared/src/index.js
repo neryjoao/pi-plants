@@ -1,0 +1,1 @@
+// Shared package — types and constants will be added here in the TypeScript migration step.
