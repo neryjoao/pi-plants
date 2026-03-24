@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
-import styles from './plantSummary.module.scss';
+import { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import { Badge } from './ui/badge';
 import { EditableName } from './EditableName';
 import { MoistureLevel } from './MoistureLevel';
+import { cn } from '@/lib/utils';
 import type { PlantState } from '@pi-plants/shared';
 import type { UpdatePlantFn } from '../types';
 
@@ -12,41 +14,51 @@ interface Props {
 }
 
 export const PlantSummary = ({ plant, updatePlant, allowEditing }: Props) => {
-  const [currentLevel, setCurrentLevel] = useState<number>();
   const [editing, setEditing] = useState(false);
   const [plantName, setPlantName] = useState(plant.name);
 
-  useEffect(() => {
-    setCurrentLevel(plant.moistureLevel);
-  }, [plant]);
-
   return (
-    <div
-      className={styles.plantSummary}
+    <Card
+      className={cn(
+        'transition-all',
+        !allowEditing && 'cursor-pointer hover:shadow-md hover:border-primary/40',
+      )}
       onClick={() => !allowEditing && updatePlant(plant)}
     >
-      {!editing ? (
-        <h3
-          className={styles.plantName}
-          onClick={() => allowEditing && setEditing(true)}
-        >
-          {plantName}
-        </h3>
-      ) : (
-        <EditableName
-          plant={plant}
-          updatePlant={updatePlant}
-          setEditing={setEditing}
-          plantName={plantName}
-          setPlantName={setPlantName}
-        />
-      )}
-      <MoistureLevel
-        plant={plant}
-        updatePlant={updatePlant}
-        currentLevel={currentLevel}
-        allowEditing={allowEditing}
-      />
-    </div>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2">
+          {!editing ? (
+            <CardTitle
+              className={cn('text-base', allowEditing && 'cursor-pointer hover:text-primary')}
+              onClick={(e) => {
+                if (allowEditing) {
+                  e.stopPropagation();
+                  setEditing(true);
+                }
+              }}
+            >
+              {plantName}
+            </CardTitle>
+          ) : (
+            <EditableName
+              plant={plant}
+              updatePlant={updatePlant}
+              setEditing={setEditing}
+              plantName={plantName}
+              setPlantName={setPlantName}
+            />
+          )}
+          <div className="flex gap-1 shrink-0">
+            <Badge variant={plant.isAutomatic ? 'default' : 'muted'}>
+              {plant.isAutomatic ? 'Auto' : 'Manual'}
+            </Badge>
+            {plant.isOn && <Badge variant="success">Watering</Badge>}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <MoistureLevel plant={plant} updatePlant={updatePlant} allowEditing={allowEditing} />
+      </CardContent>
+    </Card>
   );
 };

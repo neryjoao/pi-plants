@@ -1,4 +1,6 @@
-import styles from './wateringMode.module.scss';
+import { Cpu, Hand, Droplets } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import { Button } from './ui/button';
 import { postWateringMode } from '../actions/setWateringMode';
 import { postWatering } from '../actions/setWatering';
 import type { PlantState } from '@pi-plants/shared';
@@ -8,9 +10,6 @@ interface Props {
   plant: PlantState;
   updatePlant: UpdatePlantFn;
 }
-
-const selectedStyles = { backgroundColor: 'green', color: 'white' };
-const notSelectedStyles = { backgroundColor: 'gainsboro', color: 'black' };
 
 export const WateringMode = ({ plant, updatePlant }: Props) => {
   const { isAutomatic, isOn, plantIndex } = plant;
@@ -29,31 +28,55 @@ export const WateringMode = ({ plant, updatePlant }: Props) => {
     }
   };
 
-  const automaticButtonStyle = isAutomatic ? selectedStyles : notSelectedStyles;
-  const manualButtonStyle = isAutomatic ? notSelectedStyles : selectedStyles;
-  const isOnButtonStyle = isAutomatic ? notSelectedStyles : isOn ? selectedStyles : notSelectedStyles;
-  const isOffButtonStyle = isAutomatic ? notSelectedStyles : isOn ? notSelectedStyles : selectedStyles;
-
   return (
-    <>
-      <h2>Watering Mode</h2>
-      <div className={styles.wateringMode}>
-        <span className={styles.mode} style={automaticButtonStyle} onClick={() => onToggleWateringMode(true)}>
-          Automatic
-        </span>
-        <span className={styles.mode} style={manualButtonStyle} onClick={() => onToggleWateringMode(false)}>
-          Manual
-        </span>
-      </div>
-      <h2>Water on/off</h2>
-      <div>
-        <span className={styles.mode} style={isOnButtonStyle} onClick={() => onToggleWatering(true)}>
-          On
-        </span>
-        <span className={styles.mode} style={isOffButtonStyle} onClick={() => onToggleWatering(false)}>
-          Off
-        </span>
-      </div>
-    </>
+    <Card className="mt-4">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base">Watering Controls</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wide font-medium">Mode</p>
+          <div className="flex gap-2">
+            <Button
+              variant={isAutomatic ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onToggleWateringMode(true)}
+            >
+              <Cpu className="h-3.5 w-3.5 mr-1.5" />
+              Automatic
+            </Button>
+            <Button
+              variant={!isAutomatic ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onToggleWateringMode(false)}
+            >
+              <Hand className="h-3.5 w-3.5 mr-1.5" />
+              Manual
+            </Button>
+          </div>
+        </div>
+
+        {!isAutomatic && (
+          <div>
+            <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wide font-medium">
+              Water pump
+            </p>
+            <div className="flex gap-2">
+              <Button variant={isOn ? 'default' : 'outline'} size="sm" onClick={() => onToggleWatering(true)}>
+                <Droplets className="h-3.5 w-3.5 mr-1.5" />
+                On
+              </Button>
+              <Button
+                variant={!isOn ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => onToggleWatering(false)}
+              >
+                Off
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };

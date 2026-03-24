@@ -1,5 +1,6 @@
-import styles from './editableName.module.scss';
-import { Icon } from '../icons/Icon';
+import { Check, X } from 'lucide-react';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 import { postWaterThreshold } from '../actions/setPlantDetails';
 import type { PlantState } from '@pi-plants/shared';
 import type { UpdatePlantFn } from '../types';
@@ -25,15 +26,26 @@ export const EditableMoisture = ({ plant, updatePlant, waterThreshold, setWaterT
   };
 
   return (
-    <form onSubmit={() => setEditing(false)} className={styles.form}>
-      <input
+    <form
+      onSubmit={(e) => { e.preventDefault(); void onClickConfirm(); }}
+      className="flex items-center gap-1.5"
+    >
+      <span className="text-xs text-muted-foreground">Threshold:</span>
+      <Input
         type="number"
+        autoFocus
         value={waterThreshold}
-        className={styles.editingName}
         onChange={(e) => setWaterThreshold(Number(e.target.value))}
+        className="h-6 w-16 text-xs px-2"
+        min={0}
+        max={100}
       />
-      <Icon name="check" wrapperProps={{ onClick: onClickConfirm, className: styles.iconWrapper }} />
-      <Icon name="cross" wrapperProps={{ onClick: onClickCancel, className: styles.iconWrapper }} />
+      <Button type="submit" size="icon" variant="ghost" className="h-6 w-6 text-green-600 hover:text-green-700" onClick={() => void onClickConfirm()}>
+        <Check className="h-3 w-3" />
+      </Button>
+      <Button type="button" size="icon" variant="ghost" className="h-6 w-6 text-red-500 hover:text-red-600" onClick={onClickCancel}>
+        <X className="h-3 w-3" />
+      </Button>
     </form>
   );
 };

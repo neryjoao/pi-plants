@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Leaf } from 'lucide-react';
 import { Plants } from './components/Plants';
 import { SelectedPlant } from './components/SelectedPlant';
-import styles from './app.module.scss';
 import { CONSTANTS } from './CONSTANTS';
 import type { PlantState } from '@pi-plants/shared';
 import type { UpdatePlantFn } from './types';
@@ -37,13 +37,24 @@ export const App = () => {
   };
 
   return (
-    <div className={styles.frame}>
-      <h3 className={styles.header}>MY PLANTS</h3>
-      {selectedPlant ? (
-        <SelectedPlant selectedPlant={selectedPlant} updatePlant={updatePlant} />
-      ) : plantDetails ? (
-        <Plants plantDetails={plantDetails} updatePlant={updatePlant} />
-      ) : null}
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-2">
+          <Leaf className="h-6 w-6 text-primary" />
+          <h1 className="text-xl font-semibold tracking-tight">My Plants</h1>
+        </div>
+      </header>
+      <main className="max-w-5xl mx-auto px-4 py-6">
+        {selectedPlant ? (
+          <SelectedPlant selectedPlant={selectedPlant} updatePlant={updatePlant} />
+        ) : plantDetails ? (
+          <Plants plantDetails={plantDetails} updatePlant={updatePlant} />
+        ) : (
+          <div className="flex items-center justify-center h-48 text-muted-foreground">
+            Connecting to plant system...
+          </div>
+        )}
+      </main>
     </div>
   );
 };
