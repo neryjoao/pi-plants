@@ -13,7 +13,8 @@ export const extractPotDetails = (pot: Pot, plantIndex: number): PlantState => {
 };
 
 export const moistureLevelToPercentage = (value: number): number => {
-  return Math.round(100 - ((value - wetLevel) / (dryLevel - wetLevel)) * 100);
+  const raw = Math.round(100 - ((value - wetLevel) / (dryLevel - wetLevel)) * 100);
+  return Math.min(100, Math.max(0, raw));
 };
 
 export const percentageToMoistureLevel = (percentage: number): number => {
