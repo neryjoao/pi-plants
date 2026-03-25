@@ -7,11 +7,7 @@ const { POST_PLANT_NAME, POST_WATER_THRESHOLD } = ENDPOINTS;
 
 export const postPlantName = async (name: string, plantIndex: number): Promise<PlantState | undefined> => {
   try {
-    const response = await axios.post<PlantState>(`${BACKEND_URL}${POST_PLANT_NAME}`, {
-      key: 'name',
-      value: name,
-      plantIndex,
-    });
+    const response = await axios.post<PlantState>(`${BACKEND_URL}${POST_PLANT_NAME}`, { value: name, plantIndex });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -20,11 +16,7 @@ export const postPlantName = async (name: string, plantIndex: number): Promise<P
 
 export const postWaterThreshold = async (threshold: number, plantIndex: number): Promise<PlantState | undefined> => {
   try {
-    const response = await axios.post<PlantState>(`${BACKEND_URL}${POST_WATER_THRESHOLD}`, {
-      key: 'waterThreshold',
-      value: threshold,
-      plantIndex,
-    });
+    const response = await axios.post<PlantState>(`${BACKEND_URL}${POST_WATER_THRESHOLD}`, { value: threshold, plantIndex });
     return response.data;
   } catch (error) {
     console.log(error);

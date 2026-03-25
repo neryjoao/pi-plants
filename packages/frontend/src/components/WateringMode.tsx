@@ -16,14 +16,14 @@ export const WateringMode = ({ plant, updatePlant }: Props) => {
 
   const onToggleWateringMode = async (setAutomatic: boolean) => {
     if (isAutomatic !== setAutomatic) {
-      const updated = await postWateringMode(setAutomatic, plantIndex);
+      const updated = await postWateringMode(plantIndex);
       if (updated) updatePlant(updated);
     }
   };
 
   const onToggleWatering = async (setIsOn: boolean) => {
     if (!isAutomatic && isOn !== setIsOn) {
-      const updated = await postWatering(setIsOn, plantIndex);
+      const updated = await postWatering(plantIndex);
       if (updated) updatePlant(updated);
     }
   };

@@ -25,6 +25,14 @@ db.exec(`
 
   CREATE INDEX IF NOT EXISTS idx_readings_plant_time
     ON readings (plant_index, recorded_at);
+
+  CREATE TABLE IF NOT EXISTS plant_settings (
+    plant_index  INTEGER PRIMARY KEY,
+    name         TEXT    NOT NULL,
+    is_automatic INTEGER NOT NULL,
+    threshold    REAL    NOT NULL,
+    is_on        INTEGER NOT NULL
+  );
 `);
 
 interface ReadingRow {
@@ -91,3 +99,55 @@ export const queryReadings = (plantIndex: number, from: string, to: string): Pla
 export const pruneOldReadings = (): void => {
   stmtPrune.run();
 };
+
+interface PlantSettingRow {
+  plant_index: number;
+  name: string;
+  is_automatic: number;
+  threshold: number;
+  is_on: number;
+}
+
+export interface PlantSetting {
+  plantIndex: number;
+  name: string;
+  isAutomatic: boolean;
+  threshold: number;
+  isOn: boolean;
+}
+
+const stmtInitSetting = db.prepare(`
+  INSERT OR IGNORE INTO plant_settings (plant_index, name, is_automatic, threshold, is_on)
+  VALUES (@plant_index, @name, @is_automatic, @threshold, @is_on)
+`);
+
+const stmtGetSettings = db.prepare(`SELECT * FROM plant_settings ORDER BY plant_index`);
+
+const stmtUpdateName     = db.prepare(`UPDATE plant_settings SET name = ? WHERE plant_index = ?`);
+const stmtUpdateAutomatic = db.prepare(`UPDATE plant_settings SET is_automatic = ? WHERE plant_index = ?`);
+const stmtUpdateThreshold = db.prepare(`UPDATE plant_settings SET threshold = ? WHERE plant_index = ?`);
+const stmtUpdateIsOn      = db.prepare(`UPDATE plant_settings SET is_on = ? WHERE plant_index = ?`);
+
+export const initPlantSetting = (data: PlantSetting): void => {
+  stmtInitSetting.run({
+    plant_index: data.plantIndex,
+    name: data.name,
+    is_automatic: data.isAutomatic ? 1 : 0,
+    threshold: data.threshold,
+    is_on: data.isOn ? 1 : 0,
+  });
+};
+
+export const getPlantSettings = (): PlantSetting[] =>
+  (stmtGetSettings.all() as PlantSettingRow[]).map(row => ({
+    plantIndex: row.plant_index,
+    name: row.name,
+    isAutomatic: Boolean(row.is_automatic),
+    threshold: row.threshold,
+    isOn: Boolean(row.is_on),
+  }));
+
+export const updatePlantName      = (plantIndex: number, name: string): void => { stmtUpdateName.run(name, plantIndex); };
+export const updatePlantAutomatic = (plantIndex: number, isAutomatic: boolean): void => { stmtUpdateAutomatic.run(isAutomatic ? 1 : 0, plantIndex); };
+export const updatePlantThreshold = (plantIndex: number, threshold: number): void => { stmtUpdateThreshold.run(threshold, plantIndex); };
+export const updatePlantIsOn      = (plantIndex: number, isOn: boolean): void => { stmtUpdateIsOn.run(isOn ? 1 : 0, plantIndex); };

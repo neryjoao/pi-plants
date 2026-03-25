@@ -1,21 +1,37 @@
 import fs from 'fs';
 import path from 'path';
-import set from 'lodash/set';
 import type { PlantConfig } from '@pi-plants/shared';
 import type { Pot } from '../../components/Pot';
-import { insertReading } from '../../database';
+import { insertReading, initPlantSetting, getPlantSettings } from '../../database';
 
 const PLANT_DETAILS_PATH = path.join(__dirname, '../plantsDetails.json');
 
-export const getData = (filePath: string = PLANT_DETAILS_PATH): PlantConfig[] => {
-  const storedData = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(storedData);
-};
+export const getData = (): PlantConfig[] => {
+  const hardwareConfigs = JSON.parse(fs.readFileSync(PLANT_DETAILS_PATH, 'utf-8')) as PlantConfig[];
 
-export const updatePlantsDetails = (key: string, value: unknown, plantIndex: number): void => {
-  const updatedData = getData();
-  set(updatedData, `[${plantIndex}].${key}`, value);
-  fs.writeFileSync(PLANT_DETAILS_PATH, JSON.stringify(updatedData));
+  hardwareConfigs.forEach((config, plantIndex) => {
+    initPlantSetting({
+      plantIndex,
+      name: config.name,
+      isAutomatic: config.isAutomatic,
+      threshold: config.waterThreshold,
+      isOn: config.isOn,
+    });
+  });
+
+  const settingsMap = new Map(getPlantSettings().map(s => [s.plantIndex, s]));
+
+  return hardwareConfigs.map((config, plantIndex) => {
+    const setting = settingsMap.get(plantIndex);
+    if (!setting) return config;
+    return {
+      ...config,
+      name: setting.name,
+      isAutomatic: setting.isAutomatic,
+      waterThreshold: setting.threshold,
+      isOn: setting.isOn,
+    };
+  });
 };
 
 export const storeDataRead = (pot: Pot): void => {
