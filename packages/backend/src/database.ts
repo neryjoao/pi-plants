@@ -1,8 +1,11 @@
 import Database from 'better-sqlite3';
+import fs from 'fs';
 import path from 'path';
 import type { PlantReading } from '@pi-plants/shared';
 
 const DB_PATH = path.join(__dirname, '../data/readings.db');
+
+fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 
 const db = new Database(DB_PATH);
 
