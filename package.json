@@ -6,7 +6,6 @@
   ],
   "scripts": {
     "install:dev": "npm install --ignore-scripts",
-    "install:pi": "npm install",
     "dev": "run-p dev:frontend dev:backend",
     "dev:frontend": "npm run dev --workspace=packages/frontend",
     "dev:backend": "npm run dev --workspace=packages/backend"

@@ -1,70 +1,131 @@
-# Getting Started with Create React App
+# Pi Plants
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An automated plant watering system built with Arduino and Raspberry Pi. Monitors soil moisture levels across multiple plants in real time and can automatically trigger watering when moisture drops below a configurable threshold.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+- **Backend** — Express.js server that communicates with an Arduino over Firmata, persists readings to SQLite, and streams live plant state via Server-Sent Events
+- **Frontend** — React + Vite dashboard for monitoring and controlling plants in real time
+- **Shared** — TypeScript types shared between the two packages
 
-### `npm start`
+## Hardware Requirements
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Raspberry Pi (any model with USB)
+- Arduino flashed with [StandardFirmata](https://github.com/firmata/arduino)
+- Soil moisture sensors (one per plant, connected to analog pins A0–A7)
+- Water pumps with relay modules (one per plant, connected to digital pins 2–9)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Plant-to-pin mapping is configured in `packages/backend/src/data/plantsDetails.json`.
 
-### `npm test`
+## Circuit
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### System Overview
 
-### `npm run build`
+```
+                          USB (Firmata)
+  ┌─────────────────┐    ─────────────   ┌──────────────────────┐
+  │  Raspberry Pi   │◄──────────────────►│    Arduino           │
+  │  (Node.js app)  │                    │  (StandardFirmata)   │
+  └─────────────────┘                    └──────────┬───────────┘
+                                                    │
+                              ┌─────────────────────┴─────────────────────┐
+                              │                                           │
+                    Digital pins 2–9                           Analog pins A0–A7
+                    (one per pump)                             (one per sensor)
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Per-Plant Wiring
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Each plant uses one relay module and one capacitive/resistive moisture sensor.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+                    ┌─────────────────────────────────────────┐
+                    │             Arduino                     │
+                    │                                         │
+                    │  5V ──────────────────────────┐         │
+                    │                               │         │
+                    │  GND ─────────────────────────┼────┐    │
+                    │                               │    │    │
+                    │  Digital Pin (2–9) ───┐       │    │    │
+                    │                       │       │    │    │
+                    │  Analog Pin (A0–A7) ◄─┼───────┼────┼──► │◄── Moisture Sensor
+                    │                       │       │    │    │
+                    └───────────────────────┼───────┼────┼────┘
+                                            │       │    │
+                                            ▼       │    │
+                                     ┌─────────┐    │    │
+                                     │  Relay  │◄───┘    │
+                                     │ Module  │◄────────┘
+                                     └────┬────┘
+                                     IN   COM  NO
+                                          │    │
+                              ┌───────────┘    │
+                              │                │
+                         [External 5V+]   [Pump +]
+                              │                │
+                              └──── Pump ──────┘
+                                       │
+                                  [External GND / Pump –]
+```
 
-### `npm run eject`
+### Pin Mapping (default `plantsDetails.json`)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+| Plant   | Relay (Digital) | Moisture Sensor (Analog) |
+|---------|-----------------|--------------------------|
+| Plant 1 | Pin 2           | A0                       |
+| Plant 2 | Pin 3           | A1                       |
+| Plant 3 | Pin 4           | A2                       |
+| Plant 4 | Pin 5           | A3                       |
+| Plant 5 | Pin 6           | A4                       |
+| Plant 6 | Pin 7           | A5                       |
+| Plant 7 | Pin 8           | A6                       |
+| Plant 8 | Pin 9           | A7                       |
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+> The relay module needs its own power source for the pump circuit. The Arduino only provides the control signal (HIGH/LOW) on the digital pin. Use an appropriate voltage for your pump (typically 5V or 12V from an external supply).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Getting Started
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 1. Install dependencies
 
-## Learn More
+```bash
+npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+On a development machine you can skip native module compilation with:
+```bash
+npm run install:dev
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 2. Configure environment
 
-### Code Splitting
+Create `packages/backend/.env`:
+```
+ARDUINO_PORT=/dev/ttyUSB0   # Serial port of the Arduino (COM3, COM7, etc. on Windows)
+PORT=3001
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+`ARDUINO_PORT` is required — the server will not start without it.
 
-### Analyzing the Bundle Size
+### 3. Run
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+npm run dev
+```
 
-### Making a Progressive Web App
+This starts both the backend (port 3001) and frontend (port 3000) in parallel.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+| Script | Description |
+|---|---|
+| `npm run dev` | Run frontend + backend together |
+| `npm run dev:backend` | Backend only |
+| `npm run dev:frontend` | Frontend only |
 
-### Advanced Configuration
+The frontend dev server proxies API requests to the backend automatically.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## How It Works
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Each plant is represented by a `Pot` — a moisture sensor + pump pair
+- Moisture readings are sampled every 2 seconds and recorded to SQLite every 5 minutes
+- Readings older than 30 days are pruned daily
+- When automatic mode is enabled, the pump turns on when moisture falls at or below the threshold and turns off when it recovers
+- The frontend receives live updates via a Server-Sent Events stream at `/plantsDetails`
