@@ -7,7 +7,8 @@ import { getData } from './src/data/dataHelper/dataHelper';
 import { pruneOldReadings } from './src/database';
 import { init } from './src/routes';
 
-const ARDUINO_PORT = process.env.ARDUINO_PORT ?? 'COM7';
+const ARDUINO_PORT = process.env.ARDUINO_PORT;
+if (!ARDUINO_PORT) throw new Error('ARDUINO_PORT environment variable is required');
 const PORT = Number(process.env.PORT ?? 3001);
 
 const app = express();
