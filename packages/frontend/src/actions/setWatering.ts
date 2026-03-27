@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { CONSTANTS } from '../CONSTANTS';
 import type { PlantState } from '@pi-plants/shared';
 
@@ -7,8 +6,12 @@ const { TOGGLE_WATERING } = ENDPOINTS;
 
 export const postWatering = async (plantIndex: number): Promise<PlantState | undefined> => {
   try {
-    const response = await axios.post<PlantState>(`${BACKEND_URL}${TOGGLE_WATERING}`, { plantIndex });
-    return response.data;
+    const res = await fetch(`${BACKEND_URL}${TOGGLE_WATERING}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plantIndex }),
+    });
+    return res.json() as Promise<PlantState>;
   } catch (error) {
     console.log(error);
   }
