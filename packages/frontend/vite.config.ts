@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-    allowedHosts: ['plants.local'],
+    allowedHosts: ['plants.local', 'localhost'],
     proxy: {
       '/plantsDetails': 'http://localhost:3001',
       '/name': 'http://localhost:3001',
