@@ -1,6 +1,15 @@
 import { Application, Request, Response, NextFunction } from 'express';
-import { queryReadings, updatePlantName, updatePlantAutomatic, updatePlantThreshold, updatePlantIsOn } from './database';
+import {
+  queryReadings,
+  updatePlantName,
+  updatePlantWateringMode,
+  updatePlantThreshold,
+  updatePlantIsOn,
+  saveSchedule,
+  getSchedule,
+} from './database';
 import { PlantSystem } from './components/PlantSystem';
+import type { ScheduleEntry, WateringMode } from '@pi-plants/shared';
 
 export const init = (app: Application, plantSystem: PlantSystem): void => {
 
@@ -35,6 +44,11 @@ export const init = (app: Application, plantSystem: PlantSystem): void => {
     res.json(queryReadings(plantIndex, from, to));
   });
 
+  app.get('/schedule/:plantIndex', (req: Request, res: Response) => {
+    const plantIndex = Number(req.params.plantIndex);
+    res.json(getSchedule(plantIndex));
+  });
+
   app.post('/name', (req: Request, res: Response) => {
     const { value, plantIndex } = req.body as { value: string; plantIndex: number };
     plantSystem.setName(plantIndex, value);
@@ -42,10 +56,10 @@ export const init = (app: Application, plantSystem: PlantSystem): void => {
     res.json(plantSystem.getPot(plantIndex));
   });
 
-  app.post('/toggleWateringMode', (req: Request, res: Response) => {
-    const { plantIndex } = req.body as { plantIndex: number };
-    plantSystem.toggleWateringMode(plantIndex);
-    updatePlantAutomatic(plantIndex, plantSystem.getPot(plantIndex).isAutomatic);
+  app.post('/setWateringMode', (req: Request, res: Response) => {
+    const { plantIndex, mode } = req.body as { plantIndex: number; mode: WateringMode };
+    plantSystem.setWateringMode(plantIndex, mode);
+    updatePlantWateringMode(plantIndex, mode);
     res.json(plantSystem.getPot(plantIndex));
   });
 
@@ -60,6 +74,13 @@ export const init = (app: Application, plantSystem: PlantSystem): void => {
     const { value, plantIndex } = req.body as { value: number; plantIndex: number };
     plantSystem.setWaterThreshold(plantIndex, value);
     updatePlantThreshold(plantIndex, value);
+    res.json(plantSystem.getPot(plantIndex));
+  });
+
+  app.post('/schedule', (req: Request, res: Response) => {
+    const { plantIndex, entries } = req.body as { plantIndex: number; entries: ScheduleEntry[] };
+    saveSchedule(plantIndex, entries);
+    plantSystem.setSchedule(plantIndex, entries);
     res.json(plantSystem.getPot(plantIndex));
   });
 };

@@ -12,8 +12,9 @@ export default defineConfig({
       '/plantsDetails': 'http://localhost:3001',
       '/name': 'http://localhost:3001',
       '/updateThreshold': 'http://localhost:3001',
-      '/toggleWateringMode': 'http://localhost:3001',
+      '/setWateringMode': 'http://localhost:3001',
       '/toggleWater': 'http://localhost:3001',
+      '/schedule': 'http://localhost:3001',
     }
 },
   resolve: {

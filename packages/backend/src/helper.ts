@@ -5,11 +5,11 @@ const dryLevel = 650;
 const wetLevel = 340;
 
 export const extractPotDetails = (pot: Pot, plantIndex: number): PlantState => {
-  const { name, isAutomatic, waterThreshold } = pot;
+  const { name, wateringMode, waterThreshold, schedule } = pot;
   const { moistureLevel } = pot.moistureSensor;
   const { isOn } = pot.pump;
 
-  return { name, isAutomatic, waterThreshold, moistureLevel, isOn, plantIndex };
+  return { name, wateringMode, waterThreshold, moistureLevel, isOn, plantIndex, schedule };
 };
 
 export const moistureLevelToPercentage = (value: number): number => {

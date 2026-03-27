@@ -49,8 +49,8 @@ export const PlantSummary = ({ plant, updatePlant, allowEditing }: Props) => {
             />
           )}
           <div className="flex gap-1 shrink-0">
-            <Badge variant={plant.isAutomatic ? 'default' : 'muted'}>
-              {plant.isAutomatic ? 'Auto' : 'Manual'}
+            <Badge variant={plant.wateringMode === 'automatic' ? 'default' : plant.wateringMode === 'scheduled' ? 'warning' : 'muted'}>
+              {plant.wateringMode === 'automatic' ? 'Auto' : plant.wateringMode === 'scheduled' ? 'Scheduled' : 'Manual'}
             </Badge>
             {plant.isOn && <Badge variant="success">Watering</Badge>}
           </div>

@@ -1,6 +1,6 @@
 import { extractPotDetails } from '../helper';
 import { Pot } from './Pot';
-import type { PlantState } from '@pi-plants/shared';
+import type { PlantState, ScheduleEntry, WateringMode } from '@pi-plants/shared';
 
 export class PlantSystem {
   private pots: Pot[];
@@ -25,8 +25,8 @@ export class PlantSystem {
     this.pots[potIndex].toggleWater();
   }
 
-  toggleWateringMode(potIndex: number): void {
-    this.pots[potIndex].toggleWateringMode();
+  setWateringMode(potIndex: number, mode: WateringMode): void {
+    this.pots[potIndex].setWateringMode(mode);
   }
 
   getMoistureLevel(potIndex: number): number {
@@ -35,6 +35,10 @@ export class PlantSystem {
 
   setWaterThreshold(potIndex: number, newLevel: number): void {
     this.pots[potIndex].setWaterThreshold(newLevel);
+  }
+
+  setSchedule(potIndex: number, entries: ScheduleEntry[]): void {
+    this.pots[potIndex].setSchedule(entries);
   }
 
   getPot(potIndex: number): PlantState {

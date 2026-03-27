@@ -5,7 +5,9 @@ export const CONSTANTS = {
     GET_SYSTEM_DETAILS: `/plantsDetails`,
     POST_PLANT_NAME: `/name`,
     POST_WATER_THRESHOLD: `/updateThreshold`,
-    TOGGLE_WATERING_MODE: `/toggleWateringMode`,
+    SET_WATERING_MODE: `/setWateringMode`,
     TOGGLE_WATERING: `/toggleWater`,
+    GET_SCHEDULE: `/schedule`,
+    POST_SCHEDULE: `/schedule`,
   },
 } as const;
