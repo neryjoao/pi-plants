@@ -9,5 +9,7 @@ export const CONSTANTS = {
     TOGGLE_WATERING: `/toggleWater`,
     GET_SCHEDULE: `/schedule`,
     POST_SCHEDULE: `/schedule`,
+    GET_ENVIRONMENT_DETAILS: `/environmentDetails`,
+    GET_ENVIRONMENT_HISTORY: `/environment/history`,
   },
 } as const;

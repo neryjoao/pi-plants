@@ -27,6 +27,11 @@ export interface PlantState {
   schedule: ScheduleEntry[];
 }
 
+export interface EnvironmentState {
+  temperature: number; // °C
+  humidity: number;    // %
+}
+
 export interface PlantReading {
   id: number;
   plantIndex: number;

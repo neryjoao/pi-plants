@@ -15,6 +15,8 @@ export default defineConfig({
       '/setWateringMode': 'http://localhost:3001',
       '/toggleWater': 'http://localhost:3001',
       '/schedule': 'http://localhost:3001',
+      '/environmentDetails': 'http://localhost:3001',
+      '/environment': 'http://localhost:3001',
     }
 },
   resolve: {

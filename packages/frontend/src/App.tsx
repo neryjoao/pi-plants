@@ -2,21 +2,32 @@ import { useState, useEffect } from 'react';
 import { Leaf } from 'lucide-react';
 import { Plants } from './components/Plants';
 import { SelectedPlant } from './components/SelectedPlant';
+import { EnvironmentSummary } from './components/EnvironmentSummary';
 import { CONSTANTS } from './CONSTANTS';
-import type { PlantState } from '@pi-plants/shared';
+import type { PlantState, EnvironmentState } from '@pi-plants/shared';
 import type { UpdatePlantFn } from './types';
 
 const { BACKEND_URL, ENDPOINTS } = CONSTANTS;
-const { GET_SYSTEM_DETAILS } = ENDPOINTS;
+const { GET_SYSTEM_DETAILS, GET_ENVIRONMENT_DETAILS } = ENDPOINTS;
 
 export const App = () => {
   const [plantDetails, setPlantDetails] = useState<PlantState[]>();
   const [selectedPlant, setSelectedPlant] = useState<PlantState>();
+  const [environment, setEnvironment] = useState<EnvironmentState>();
 
   useEffect(() => {
     const source = new EventSource(`${BACKEND_URL}${GET_SYSTEM_DETAILS}`);
     source.onmessage = (event) => {
       setPlantDetails(JSON.parse(event.data) as PlantState[]);
+    };
+    return () => source.close();
+  }, []);
+
+  useEffect(() => {
+    const source = new EventSource(`${BACKEND_URL}${GET_ENVIRONMENT_DETAILS}`);
+    source.onmessage = (event) => {
+      const data = JSON.parse(event.data) as EnvironmentState | null;
+      if (data) setEnvironment(data);
     };
     return () => source.close();
   }, []);
@@ -39,9 +50,12 @@ export const App = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-2">
-          <Leaf className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-semibold tracking-tight">My Plants</h1>
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Leaf className="h-6 w-6 text-primary" />
+            <h1 className="text-xl font-semibold tracking-tight">My Plants</h1>
+          </div>
+          {environment && <EnvironmentSummary env={environment} />}
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-4 py-6">

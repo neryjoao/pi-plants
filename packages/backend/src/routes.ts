@@ -7,11 +7,13 @@ import {
   updatePlantIsOn,
   saveSchedule,
   getSchedule,
+  queryEnvironmentReadings,
 } from './database';
 import { PlantSystem } from './components/PlantSystem';
+import { TemperatureHumiditySensor } from './components/TemperatureHumiditySensor';
 import type { ScheduleEntry, WateringMode } from '@pi-plants/shared';
 
-export const init = (app: Application, plantSystem: PlantSystem): void => {
+export const init = (app: Application, plantSystem: PlantSystem, envSensor: TemperatureHumiditySensor | null): void => {
 
   app.get('/ping', (_req: Request, res: Response) => {
     res.send('pong');
@@ -42,6 +44,21 @@ export const init = (app: Application, plantSystem: PlantSystem): void => {
     const to = (req.query.to as string) ?? new Date().toISOString();
     const from = (req.query.from as string) ?? new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     res.json(queryReadings(plantIndex, from, to));
+  });
+
+  app.get('/environmentDetails', sseMiddleware, (_req: Request, res: Response) => {
+    setInterval(() => {
+      const state = envSensor
+        ? { temperature: envSensor.temperature, humidity: envSensor.humidity }
+        : null;
+      res.write(`data: ${JSON.stringify(state)}\n\n`);
+    }, 2000);
+  });
+
+  app.get('/environment/history', (req: Request, res: Response) => {
+    const to   = (req.query.to   as string) ?? new Date().toISOString();
+    const from = (req.query.from as string) ?? new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    res.json(queryEnvironmentReadings(from, to));
   });
 
   app.get('/schedule/:plantIndex', (req: Request, res: Response) => {

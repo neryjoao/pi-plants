@@ -37,6 +37,15 @@ db.exec(`
     is_on         INTEGER NOT NULL
   );
 
+  CREATE TABLE IF NOT EXISTS environment_readings (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    temperature REAL NOT NULL,
+    humidity    REAL NOT NULL,
+    recorded_at TEXT NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_env_time ON environment_readings (recorded_at);
+
   CREATE TABLE IF NOT EXISTS plant_schedules (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     plant_index INTEGER NOT NULL,
@@ -186,6 +195,34 @@ export const updatePlantWateringMode = (plantIndex: number, mode: WateringMode):
 };
 export const updatePlantThreshold    = (plantIndex: number, threshold: number): void => { stmtUpdateThreshold.run(threshold, plantIndex); };
 export const updatePlantIsOn         = (plantIndex: number, isOn: boolean): void => { stmtUpdateIsOn.run(isOn ? 1 : 0, plantIndex); };
+
+// ─── Environment readings ─────────────────────────────────────────────────────
+
+const stmtInsertEnv = db.prepare(`
+  INSERT INTO environment_readings (temperature, humidity, recorded_at)
+  VALUES (?, ?, ?)
+`);
+
+const stmtQueryEnv = db.prepare(`
+  SELECT * FROM environment_readings
+  WHERE recorded_at BETWEEN ? AND ?
+  ORDER BY recorded_at
+`);
+
+const stmtPruneEnv = db.prepare(
+  `DELETE FROM environment_readings WHERE recorded_at < datetime('now', '-30 days')`
+);
+
+export const insertEnvironmentReading = (temperature: number, humidity: number): void => {
+  stmtInsertEnv.run(temperature, humidity, new Date().toISOString());
+};
+
+export const queryEnvironmentReadings = (from: string, to: string) =>
+  stmtQueryEnv.all(from, to) as { id: number; temperature: number; humidity: number; recorded_at: string }[];
+
+export const pruneOldEnvironmentReadings = (): void => {
+  stmtPruneEnv.run();
+};
 
 // ─── Schedules ────────────────────────────────────────────────────────────────
 

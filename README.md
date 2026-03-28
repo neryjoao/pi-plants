@@ -11,9 +11,10 @@ An automated plant watering system built with Arduino and Raspberry Pi. Monitors
 ## Hardware Requirements
 
 - Raspberry Pi (any model with USB)
-- Arduino flashed with [StandardFirmata](https://github.com/firmata/arduino)
+- Arduino Mega flashed with [ConfigurableFirmata](https://github.com/firmata/ConfigurableFirmata) (with DHT module enabled)
 - Soil moisture sensors (one per plant, connected to analog pins A0–A7)
 - Water pumps with relay modules (one per plant, connected to digital pins 2–9)
+- DHT22 (or DHT11) temperature/humidity sensor module (3-pin, connected to a digital pin)
 
 Plant-to-pin mapping is configured in `packages/backend/src/data/plantsDetails.json`.
 
@@ -25,14 +26,28 @@ Plant-to-pin mapping is configured in `packages/backend/src/data/plantsDetails.j
                           USB (Firmata)
   ┌─────────────────┐    ─────────────   ┌──────────────────────┐
   │  Raspberry Pi   │◄──────────────────►│    Arduino           │
-  │  (Node.js app)  │                    │  (StandardFirmata)   │
+  │  (Node.js app)  │                    │ (ConfigurableFirmata)│
   └─────────────────┘                    └──────────┬───────────┘
                                                     │
                               ┌─────────────────────┴─────────────────────┐
-                              │                                           │
-                    Digital pins 2–9                           Analog pins A0–A7
-                    (one per pump)                             (one per sensor)
+                              │                         │                 │
+                    Digital pins 2–9        A8 / pin 62        Analog pins A0–A7
+                    (one per pump)          (DHT sensor)        (one per sensor)
 ```
+
+### DHT Temperature/Humidity Sensor Wiring
+
+Use a **3-pin DHT module** (not a bare 4-pin sensor) — the module has the pull-up resistor built in.
+
+```
+DHT module          Arduino Mega
+──────────          ────────────
+VCC        ──────►  5V
+DATA       ──────►  Digital pin 62 / A8 (or any free digital pin)
+GND        ──────►  GND
+```
+
+> Any free digital pin works, including analog pins used as digital (e.g. A8 = pin 62 on the Mega).
 
 ### Per-Plant Wiring
 
@@ -85,6 +100,15 @@ Each plant uses one relay module and one capacitive/resistive moisture sensor.
 
 ## Getting Started
 
+### 0. Flash the Arduino
+
+The Arduino must be running **ConfigurableFirmata** with the DHT module enabled.
+
+1. Open Arduino IDE and install the **ConfigurableFirmata** library via `Sketch > Include Library > Manage Libraries`
+2. Open `File > Examples > ConfigurableFirmata > ConfigurableFirmata`
+3. Ensure `#define ENABLE_DHT` is uncommented in the sketch
+4. Upload to your Arduino Mega
+
 ### 1. Install dependencies
 
 ```bash
@@ -102,9 +126,11 @@ Create `packages/backend/.env`:
 ```
 ARDUINO_PORT=/dev/ttyUSB0   # Serial port of the Arduino (COM3, COM7, etc. on Windows)
 PORT=3001
+DHT_PIN=62                  # Digital pin the DHT sensor DATA wire is connected to (default: 62 = A8 on Mega)
+DHT_TYPE=2                  # 0 = DHT11, 1 = DHT21, 2 = DHT22 (default: 0)
 ```
 
-`ARDUINO_PORT` is required — the server will not start without it.
+`ARDUINO_PORT` is required — the server will not start without it. `DHT_PIN` and `DHT_TYPE` are optional and default to pin 22 and DHT11 respectively.
 
 ### 3. Run
 
