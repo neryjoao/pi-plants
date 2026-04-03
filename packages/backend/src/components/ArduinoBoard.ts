@@ -52,32 +52,23 @@ export class ArduinoBoard {
    */
   setupDHTSensor(pin: number, type: 0 | 1 | 2, callback: (humidity: number, temperature: number) => void): void {
     const DHT_DATA = 0x74;
+    // ConfigurableFirmata DhtFirmata type codes: 0x01 = DHT11, 0x02 = DHT22
+    const typeCode = type === 2 ? 0x02 : 0x01;
 
     (this.board as any).sysexResponse(DHT_DATA, (data: number[]) => {
-      console.log('[DHT] raw sysex data:', data, '| expecting pin:', pin);
-      if (data[0] !== pin) return;
-      const humidity    = this.decodeFirmataFloat(data.slice(2, 7));
-      const temperature = this.decodeFirmataFloat(data.slice(7, 12));
-      console.log('[DHT] decoded — humidity:', humidity, 'temperature:', temperature);
+      if (data[0] !== 0 || data[1] !== pin) return;
+      // Temperature and humidity are signed/unsigned 14-bit integers (2 × 7-bit bytes) × 10
+      const tempRaw = data[2] | (data[3] << 7);
+      const temperature = (tempRaw > 8191 ? tempRaw - 16384 : tempRaw) / 10;
+      const humidity = (data[4] | (data[5] << 7)) / 10;
       if (isFinite(humidity) && isFinite(temperature)) {
         callback(humidity, temperature);
       }
     });
 
-    // Attach the sensor — ConfigurableFirmata will begin sending readings
-    (this.board as any).sysexCommand([DHT_DATA, pin, type]);
-  }
-
-  private decodeFirmataFloat(bytes: number[]): number {
-    // Firmata encodes a 32-bit IEEE 754 float across 5 × 7-bit bytes
-    const uint32 =
-      bytes[0] |
-      (bytes[1] << 7) |
-      (bytes[2] << 14) |
-      (bytes[3] << 21) |
-      ((bytes[4] & 0x0f) << 28);
-    const buf = Buffer.allocUnsafe(4);
-    buf.writeUInt32LE(uint32 >>> 0, 0);
-    return buf.readFloatLE(0);
+    // DhtFirmata.report() is a no-op — must poll by re-sending the command
+    const sendCommand = () => (this.board as any).sysexCommand([DHT_DATA, typeCode, pin]);
+    sendCommand();
+    setInterval(sendCommand, 2000);
   }
 }
